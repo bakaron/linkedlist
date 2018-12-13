@@ -1,0 +1,367 @@
+#ifndef AISDI_LINEAR_LINKEDLIST_H
+#define AISDI_LINEAR_LINKEDLIST_H
+
+#include <cstddef>
+#include <initializer_list>
+#include <stdexcept>
+
+namespace aisdi
+{
+
+template <typename Type>
+class LinkedList
+{
+public:
+  using difference_type = std::ptrdiff_t;
+  using size_type = std::size_t;
+  using value_type = Type;
+  using pointer = Type*;
+  using reference = Type&;
+  using const_pointer = const Type*;
+  using const_reference = const Type&;
+
+  class ConstIterator;
+  class Iterator;
+  using iterator = Iterator;
+  using const_iterator = ConstIterator;
+private:
+struct node{
+//public:
+  Type var;
+  node *next;
+  node *prev;
+
+ node(){
+ next=prev=nullptr;
+ }
+node(const Type item):var(item)
+{
+  next=prev=nullptr;}
+};
+ size_type list_size;
+ node *head;
+ node *tail;
+ size_type l_size;
+public:
+
+
+  LinkedList()
+  {
+  tail=new node;
+  head=tail;
+  l_size=0;
+  }
+
+  LinkedList(std::initializer_list<Type> l)
+  {
+  LinkedList();
+    for(auto it=l.begin();it!= l.end();it++){
+    tail->next= new node;
+    tail->var=*it;
+    tail->next->prev=tail;
+    tail=tail->next;
+    l_size+=1;
+
+        //append(*it);
+    };
+   (void)l; // disables "unused argument" warning, can be removed when method is implemented.
+  throw std::runtime_error("TODO");
+  }
+
+  LinkedList(const LinkedList& other)
+  {
+    (void)other;
+    throw std::runtime_error("TODO");
+  }
+
+  LinkedList(LinkedList&& other)
+  {
+    (void)other;
+    throw std::runtime_error("TODO");
+  }
+
+  ~LinkedList()
+  {}
+
+  LinkedList& operator=(const LinkedList& other)
+  {
+    (void)other;
+    throw std::runtime_error("TODO");
+  }
+
+  LinkedList& operator=(LinkedList&& other)
+  {
+    (void)other;
+    throw std::runtime_error("TODO");
+  }
+
+  bool isEmpty() const
+  {
+    return head==tail? 1:0;
+    //throw std::runtime_error("TODO");
+  }
+
+  size_type getSize() const
+  {
+    return l_size;
+    //throw std::runtime_error("TODO");
+  }
+
+  void append(const Type& item)//ok
+  {
+   // node *help=new node(item);
+    //node *temp=tail->prev;
+    //tail->var=item;
+    tail->next=new node;
+    tail->var=item;
+    tail->next->prev=tail;
+    tail=tail->next;
+    l_size++;
+    //node*help=new node(item);
+    //tail->prev->next=help;
+    //help->prev=tail->prev;
+    //help->next=tail;
+    //tail->prev=help;
+
+   // (void)item;
+   // throw std::runtime_error("TODO");
+  }
+
+  void prepend(const Type& item)
+  {
+    node *help= new node;
+    l_size++;
+    help->next=head;
+    head->prev=help;
+    head=help;
+    head->var=item;
+
+
+    //(void)item;
+    //throw std::runtime_error("TODO");
+  }
+
+  void insert(const const_iterator& insertPosition, const Type& item)
+  {
+    (void)insertPosition;
+    (void)item;
+    throw std::runtime_error("TODO");
+  }
+
+  Type popFirst()//nie ok
+  {
+
+    Type l=head->var;
+    node *help=head;
+    head=head->next;
+    head->prev=nullptr;
+    delete help;
+    l_size--;
+
+    return l;
+   // throw std::runtime_error("TODO");
+  }
+
+  Type popLast()//not ok
+  {
+    Type l=head->var;
+    l_size--;
+    if(head->next==tail){
+
+      delete head;
+
+      head=tail;
+      tail->prev=nullptr;
+      return l;
+    }
+    node *help = tail->prev;
+    tail->prev = help->prev;
+    help->prev->next=tail;
+    l=help->var;
+    delete help;
+    return l;
+
+   // throw std::runtime_error("TODO");
+  }
+
+  void erase(const const_iterator& possition)
+  {
+    (void)possition;
+    throw std::runtime_error("TODO");
+  }
+
+  void erase(const const_iterator& firstIncluded, const const_iterator& lastExcluded)
+  {
+    (void)firstIncluded;
+    (void)lastExcluded;
+    throw std::runtime_error("TODO");
+  }
+
+  iterator begin()
+  {
+    throw std::runtime_error("TODO");
+  }
+
+  iterator end()
+  {
+    throw std::runtime_error("TODO");
+  }
+
+  const_iterator cbegin() const
+  {
+    throw std::runtime_error("TODO");
+  }
+
+  const_iterator cend() const
+  {
+    throw std::runtime_error("TODO");
+  }
+
+  const_iterator begin() const
+  {
+    return cbegin();
+  }
+
+  const_iterator end() const
+  {
+    return cend();
+  }
+};
+
+template <typename Type>
+class LinkedList<Type>::ConstIterator
+{
+friend LinkedList<Type>;
+public:
+  using iterator_category = std::bidirectional_iterator_tag;
+  using value_type = typename LinkedList::value_type;
+  using difference_type = typename LinkedList::difference_type;
+  using pointer = typename LinkedList::const_pointer;
+  using reference = typename LinkedList::const_reference;
+private:
+  LinkedList *pt;
+  node * node_pt;
+  ConstIterator(LinkedList<Type> *p,node *n):pt(p),node_pt(n)
+  {}
+
+public:
+  explicit ConstIterator()
+  {}
+
+  reference operator*() const//not ok
+  {
+
+    return node_pt->var;
+    //throw std::runtime_error("TODO");
+  }
+
+  ConstIterator& operator++()
+  {
+    if(node_pt->next->next!=nullptr){node_pt=node_pt->next;}
+    return *this;
+    //throw std::runtime_error("TODO");
+  }
+
+  ConstIterator operator++(int)
+  {
+
+    throw std::runtime_error("TODO");
+  }
+
+  ConstIterator& operator--()
+  {
+    throw std::runtime_error("TODO");
+  }
+
+  ConstIterator operator--(int)
+  {
+    throw std::runtime_error("TODO");
+  }
+
+  ConstIterator operator+(difference_type d) const
+  {
+    (void)d;
+    throw std::runtime_error("TODO");
+  }
+
+  ConstIterator operator-(difference_type d) const
+  {
+    (void)d;
+    throw std::runtime_error("TODO");
+  }
+
+  bool operator==(const ConstIterator& other) const
+  {
+    (void)other;
+    throw std::runtime_error("TODO");
+  }
+
+  bool operator!=(const ConstIterator& other) const
+  {
+    (void)other;
+    throw std::runtime_error("TODO");
+  }
+};
+
+template <typename Type>
+class LinkedList<Type>::Iterator : public LinkedList<Type>::ConstIterator
+{
+public:
+  using pointer = typename LinkedList::pointer;
+  using reference = typename LinkedList::reference;
+
+    Iterator( LinkedList<Type> *p,node *n)
+    {ConstIterator(p,n);}
+  explicit Iterator()
+  {}
+
+  Iterator(const ConstIterator& other)
+    : ConstIterator(other)
+  {}
+
+  Iterator& operator++()
+  {
+    ConstIterator::operator++();
+    return *this;
+  }
+
+  Iterator operator++(int)
+  {
+    auto result = *this;
+    ConstIterator::operator++();
+    return result;
+  }
+
+  Iterator& operator--()
+  {
+    ConstIterator::operator--();
+    return *this;
+  }
+
+  Iterator operator--(int)
+  {
+    auto result = *this;
+    ConstIterator::operator--();
+    return result;
+  }
+
+  Iterator operator+(difference_type d) const
+  {
+    return ConstIterator::operator+(d);
+  }
+
+  Iterator operator-(difference_type d) const
+  {
+    return ConstIterator::operator-(d);
+  }
+
+  reference operator*() const
+  {
+    // ugly cast, yet reduces code duplication.
+    return const_cast<reference>(ConstIterator::operator*());
+  }
+};
+
+}
+
+#endif // AISDI_LINEAR_LINKEDLIST_H
